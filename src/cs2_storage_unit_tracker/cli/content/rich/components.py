@@ -55,6 +55,9 @@ class Key(StrEnum):
     REPORT_NEGATIVE = "report_negative"
     REPORT_FAILED = "report_failed"
 
+    MARKDOWN_ITEM_POSITIVE = "markdown_item_positive"
+    MARKDOWN_ITEM_NEGATIVE = "markdown_item_negative"
+
 
 class Type(StrEnum):
     TASK = "task"
@@ -327,6 +330,22 @@ COMPONENTS: MappingProxyType[Key, Template] = MappingProxyType(
                 Key.STATUS_HEADER,
                 Key.ITEM_HEADER,
                 Key.ITEM_FIELDS,
+            ),
+        ),
+        Key.MARKDOWN_ITEM_POSITIVE: Template(
+            type=Type.ITEM,
+            content=(
+                Key.ITEM_HEADER,
+                Key.ITEM_FIELDS,
+                Key.ITEM_POSITIVE_PROFIT,
+            ),
+        ),
+        Key.MARKDOWN_ITEM_NEGATIVE: Template(
+            type=Type.ITEM,
+            content=(
+                Key.ITEM_HEADER,
+                Key.ITEM_FIELDS,
+                Key.ITEM_NEGATIVE_PROFIT,
             ),
         ),
         Key.REPORT_HEADER: Template(

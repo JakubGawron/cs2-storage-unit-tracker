@@ -1,11 +1,1 @@
-synced_items = [
-    "Revolution Case",
-    "Killowat Case",
-    "Dreams & Nightmares Case",
-    "Sealed Genesis Terminal",
-    "Gallery Case",
-    "Fracture Case",
-    "Snakebite Case",
-    "Recoil Case",
-    "Clutch Case",
-]
+synced_items = []

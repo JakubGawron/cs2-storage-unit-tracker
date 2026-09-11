@@ -8,6 +8,10 @@ class Paths:
     project_dir: Path
 
     @property
+    def reports(self) -> Path:
+        return self.root_dir / "reports"
+
+    @property
     def portfolio(self) -> Path:
         return self.root_dir / "settings" / "portfolio.toml"
 

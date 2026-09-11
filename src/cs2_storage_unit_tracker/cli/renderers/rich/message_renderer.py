@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from typing import Any
 
-from cs2_storage_unit_tracker.cli.content.rich import messages
-from cs2_storage_unit_tracker.cli.renderers.rich.console_instance import console
 from rich.prompt import Confirm
 from rich.text import Text
+
+from cs2_storage_unit_tracker.cli.content.rich import messages
+from cs2_storage_unit_tracker.cli.renderers.rich.console_instance import console
 
 
 @dataclass(frozen=True, slots=True)

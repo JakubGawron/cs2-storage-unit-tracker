@@ -17,6 +17,7 @@ from cs2_storage_unit_tracker.cli.renderers.rich import (
 from cs2_storage_unit_tracker.cli.renderers.rich.component_renderer import (
     RichComponentRenderer,
 )
+from cs2_storage_unit_tracker.cli.renderers.txt import MarkdownDocument
 from cs2_storage_unit_tracker.config import (
     FRANKFURTER_API_CONFIG,
     STEAM_API_CONFIG,
@@ -64,6 +65,11 @@ def create_app() -> App:
             "reset_after_hours": reset_after_hours,
         }
     )
+
+    markdown_document = MarkdownDocument(
+        reports_path=paths.reports, last_run=runtime.last_run
+    )
+
     frankfurter_api_settings: FrankfurterApiSettings = user_settings.frankfurter_api
     exchanged_currency: str | None = frankfurter_api_settings.to_currency
 
@@ -93,6 +99,7 @@ def create_app() -> App:
         runtime=runtime,
         sync_status=sync_status,
         user_settings=user_settings,
+        markdown_document=markdown_document,
         steam_api_client=steam_api_client,
         exchange_api_client=frankfurter_api_client,
         currency_formatter=currency_formatter,

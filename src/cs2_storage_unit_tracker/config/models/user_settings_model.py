@@ -44,7 +44,7 @@ class FrankfurterApiSettings(BaseModel):
     )
 
     to_currency: str | None = Field(
-        default=USER_DEFAULTS.frankfurter_api.to_currency, min_length=3, max_length=3
+        default=USER_DEFAULTS.frankfurter_api.to_currency, max_length=3
     )
 
     @field_validator("to_currency")

@@ -86,6 +86,10 @@ MESSAGES: MappingProxyType[Key, Template] = MappingProxyType(
                     text="You have already generated the report for this period. Run it again?",
                     style=Style.SUCCESS,
                 ),
+                Segment(
+                    text=" (This will erase the current report)",
+                    style=Style.ERROR,
+                ),
             ),
             icon=Icon.SUCCESS,
         ),

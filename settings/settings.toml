@@ -12,7 +12,7 @@ app_id = 730 # Steam game app ID (integer)
 #
 # See supported currencies in: docs/configuration.md
 #
-currency = "PLN" # (ISO code string)
+currency = "USD" # (ISO code string)
 
 
 [frankfurter_api]
@@ -21,7 +21,7 @@ currency = "PLN" # (ISO code string)
 #
 # See supported currencies in: docs/configuration.md
 #
-to_currency = "USD" # (ISO code string)
+to_currency = "" # (ISO code string)
 
 
 [formatting]

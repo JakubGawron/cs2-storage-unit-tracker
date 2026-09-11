@@ -14,6 +14,7 @@ from cs2_storage_unit_tracker.cli.renderers.rich import RichMessageRenderer
 from cs2_storage_unit_tracker.cli.renderers.rich.component_renderer import (
     RichComponentRenderer,
 )
+from cs2_storage_unit_tracker.cli.renderers.txt import MarkdownDocument
 from cs2_storage_unit_tracker.config import STEAM_API_CONFIG
 from cs2_storage_unit_tracker.config.loaders import FileLoader
 from cs2_storage_unit_tracker.config.models import (
@@ -39,6 +40,7 @@ class App:
     runtime: Runtime
     sync_status: SyncStatus
     user_settings: UserSettings
+    markdown_document: MarkdownDocument
     steam_api_client: SteamApiClient
     exchange_api_client: FrankfurterApiClient
     currency_formatter: CurrencyFormatter
@@ -83,6 +85,8 @@ class App:
         ):
             return
 
+        rate: Decimal | None
+        should_continue: bool
         rate, should_continue = self._resolve_exchange_rate(
             source_currency=source_currency
         )
@@ -93,6 +97,7 @@ class App:
 
     def _clear_sync_state(self) -> None:
         self.sync_status.synced_items.clear()
+        self.markdown_document.clear()
         self.runtime.reset()
 
     def _persist_state(self) -> None:
@@ -115,6 +120,7 @@ class App:
 
         if should_reset:
             self._clear_sync_state()
+
         elif last_source_currency != source_currency:
             try:
                 exchange_rate: Decimal = self.exchange_api_client.get_rate(
@@ -122,7 +128,6 @@ class App:
                     target_currency=source_currency,
                 )
                 self.runtime.exchange_money_values(exchange_rate=exchange_rate)
-                self.runtime.last_source_currency = source_currency
             except ApiError:
                 if not self.message_renderer.confirm(
                     key=messages_key.LAST_CURRENCY_EXCHANGE_FAIL
@@ -130,16 +135,17 @@ class App:
                     return False
                 self._clear_sync_state()
 
+        self.runtime.last_source_currency = source_currency
         return True
 
     def _confirm_partial_run(
         self, counters: ProgressCounters, requests_left: int
     ) -> bool:
-        missing_requests = max(0, counters.outdated_total - requests_left)
+        missing_requests: int = max(0, counters.outdated_total - requests_left)
         if missing_requests <= 0:
             return True
 
-        completable_requests = counters.outdated_total - missing_requests
+        completable_requests: int = counters.outdated_total - missing_requests
         return self.message_renderer.confirm(
             key=messages_key.PARTIAL_RUN,
             variables={
@@ -155,10 +161,12 @@ class App:
             return None, True
 
         try:
-            rate = self.exchange_api_client.get_rate(source_currency=source_currency)
+            rate: Decimal = self.exchange_api_client.get_rate(
+                source_currency=source_currency
+            )
             return rate, True
         except ApiError:
-            should_continue = self.message_renderer.confirm(
+            should_continue: bool = self.message_renderer.confirm(
                 key=messages_key.RATE_EXCHANGE_FAIL
             )
             return None, should_continue
@@ -254,12 +262,17 @@ class App:
         self.sync_status.synced_items.add(item_name)
         self.runtime.total_requests += 1
 
-        key: components_key = (
-            components_key.ITEM_POSITIVE
+        keys: list[components_key] = [
+            components_key.ITEM_POSITIVE,
+            components_key.MARKDOWN_ITEM_POSITIVE
             if item_values["profit"] > 0
-            else components_key.ITEM_NEGATIVE
-        )
-        component_renderer.status_update(key=key, variables=item_display)
+            else components_key.ITEM_NEGATIVE,
+            components_key.MARKDOWN_ITEM_NEGATIVE,
+        ]
+        component_key: components_key = keys[0]
+        markdown_key: components_key = keys[1]
+        component_renderer.status_update(key=component_key, variables=item_display)
+        self.markdown_document.add(key=markdown_key, variables=item_display)
         component_renderer.progress_advance_task(task_id=task_id)
         time.sleep(STEAM_API_CONFIG.request_interval)
 
@@ -288,3 +301,6 @@ class App:
             key = components_key.REPORT_NEGATIVE
 
         component_renderer.status_update(key=key, variables=report_display)
+
+        if key != components_key.REPORT_FAILED:
+            self.markdown_document.save(key=key, variables=report_display)

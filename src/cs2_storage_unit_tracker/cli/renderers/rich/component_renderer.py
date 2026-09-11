@@ -3,14 +3,16 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any
 
-from cs2_storage_unit_tracker.cli.content.rich import components
-from cs2_storage_unit_tracker.cli.renderers.rich.console_instance import console
 from rich.console import Group
 from rich.live import Live
 from rich.panel import Panel
 from rich.progress import Progress, TaskID
 from rich.status import Status
 from rich.text import Text
+
+from cs2_storage_unit_tracker.cli.content.rich import components
+from cs2_storage_unit_tracker.cli.renderers.flatten import flatten_and_format
+from cs2_storage_unit_tracker.cli.renderers.rich.console_instance import console
 
 
 @dataclass(frozen=True, slots=True)
@@ -97,11 +99,15 @@ class RichComponentRenderer:
             key=key, expected_types=[components.Type.TASK]
         )
 
-        parts: list[tuple[str, str]] = self._flatten_and_format(
-            content=template.content, variables=variables
+        parts: list[tuple[str, components.Style | None]] = flatten_and_format(
+            content=template.content,
+            variables=variables,
         )
 
-        return self.progress.add_task(description=Text.assemble(*parts).markup)
+        rich_parts: list[tuple[str, str]] = [
+            (text, style.value if style is not None else "") for text, style in parts
+        ]
+        return self.progress.add_task(description=Text.assemble(*rich_parts).markup)
 
     def progress_track_task(
         self,
