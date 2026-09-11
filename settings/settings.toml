@@ -1,0 +1,47 @@
+[steam_api]
+# Steam game app ID to track prices for.
+# Find app ID at: https://steamdb.info/
+# Default Counter-Strike 2 (app ID: 730)
+#
+# WARNING: App ID correctness is NOT validated at runtime.
+# Invalid app ID may cause failed requests to Steam API.
+#
+app_id = 730 # Steam game app ID (integer)
+
+# Currency used by Steam API when retrieving prices (ISO code).
+#
+# See supported currencies in: docs/configuration.md
+#
+currency = "PLN" # (ISO code string)
+
+
+[frankfurter_api]
+# Currency to convert prices into (ISO code).
+# If empty, currency conversion is disabled.
+#
+# See supported currencies in: docs/configuration.md
+#
+to_currency = "USD" # (ISO code string)
+
+
+[formatting]
+# Controls how currency values are displayed.
+#
+# true:
+# Use locale-aware formatting with localized currency symbols, decimal
+# separators, thousands separators, and currency placement.
+# Example: 1.234,56 €.
+#
+# false:
+# Use a consistent format regardless of the user's locale.
+# Example: 1,234.56 EUR.
+#
+# The currency code is always retained when locale-aware formatting is disabled.
+#
+source_currency_use_locale = true # (true / false boolean)
+exchanged_currency_use_locale = true # (true / false boolean)
+
+
+[general]
+# Number of hours after which a reset is required. Minimum is 6.
+reset_after_hours = 24 # (hours integer)
