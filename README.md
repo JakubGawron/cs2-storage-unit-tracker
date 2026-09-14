@@ -168,7 +168,7 @@ This generates distribution files in the `dist/` directory.
 **Clone the repository**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/JakubGawron/cs2-storage-unit-tracker
 cd cs2-storage-unit-tracker
 ```
 
