@@ -1,10 +1,10 @@
 [project]
 name = "cs2-storage-unit-tracker"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "CLI application for tracking game storage unit inventory, financial metrics, and currency-converted valuations across multiple titles, with primary support for Counter-Strike 2"
 readme = "README.md"
 authors = [
-    { name = "Jakub Gawron", email = "203234060+JakubGawron@users.noreply.github.com" }
+    { name = "Jakub Gawron", email = "contact.jakub.gawron@gmail.com" }
 ]
 requires-python = ">=3.14"
 dependencies = [
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cs2-storage-unit-tracker = "cs2_storage_unit_tracker.cli.app:main"
+cs2-storage-unit-tracker = "cs2_storage_unit_tracker.cli.main:main"
 
 [build-system]
 requires = ["uv_build>=0.12.6,<0.13.0"]

@@ -1,9 +1,26 @@
+"""Default configuration settings for the application.
+
+This module defines immutable, hierarchical configuration objects that specify
+default behavior for Steam API interactions, currency formatting, currency
+conversion, and general application settings.
+"""
+
 from dataclasses import dataclass
 from types import MappingProxyType
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SteamApiSettings:
+    """Configuration for Steam Community Market API requests.
+
+    Attributes:
+        app_id: Steam game application ID to track market prices for.
+            Default is 730 (Counter-Strike 2). App IDs can be found at
+            https://steamdb.info/
+        currency: ISO 4217 currency code used by the Steam API when
+            retrieving prices. Default is "USD".
+    """
+
     # Steam game app ID to track prices for.
     # Find app ID at: https://steamdb.info/
     # Default Counter-Strike 2 (app ID: 730)
@@ -15,12 +32,34 @@ class SteamApiSettings:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class FrankfurterApiSettings:
+    """Configuration for Frankfurter currency conversion API requests.
+
+    Attributes:
+        to_currency: ISO 4217 currency code to convert prices into. If None,
+            no currency conversion is performed. Default is None.
+    """
+
     # Currency to convert prices into (iso code).
     to_currency: str | None = None
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class FormattingSettings:
+    """Configuration for currency value display and localization.
+
+    Attributes:
+        source_currency_use_locale: If True, format the original Steam price
+            using locale-specific formatting rules. Default is True.
+        exchanged_currency_use_locale: If True, format the converted price
+            using locale-specific formatting rules. Default is True.
+        fallback_format: CLDR number format pattern used when locale-based
+            formatting is unavailable. Default is "#,##0.00 ¤¤" (amount with
+            two decimal places followed by currency code).
+        currency_locales: Immutable mapping of ISO 4217 currency codes to
+            POSIX locale identifiers. Used to determine the appropriate locale
+            for currency formatting and number representation.
+    """
+
     source_currency_use_locale: bool = True
     exchanged_currency_use_locale: bool = True
 
@@ -198,15 +237,37 @@ class FormattingSettings:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GeneralSettings:
+    """General application behavior settings.
+
+    Attributes:
+        reset_after_hours: Time period in hours after which counters and
+            caches are reset. Default is 24 hours.
+    """
+
     reset_after_hours: int = 24
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UserDefaults:
+    """Composite configuration object containing all user default settings.
+
+    This dataclass aggregates all configuration categories into a single,
+    immutable object for convenient access throughout the application.
+
+    Attributes:
+        steam_api: Default configuration for Steam API interactions.
+        frankfurter_api: Default configuration for currency conversion API
+            interactions.
+        formatting: Default configuration for currency display formatting
+            and localization.
+        general: Default configuration for general application behavior.
+    """
+
     steam_api = SteamApiSettings()
     frankfurter_api = FrankfurterApiSettings()
     formatting = FormattingSettings()
     general = GeneralSettings()
 
 
+#: Global instance of user defaults containing all configuration settings.
 USER_DEFAULTS = UserDefaults()
