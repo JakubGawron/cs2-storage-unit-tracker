@@ -237,6 +237,14 @@ settings/
 app_id = 730
 
 # Currency used by Steam API when retrieving prices (ISO code).
+#
+# NOTE: FOR NOW, this currency is correlated with purchase_price_per_item in
+# portfolio.toml. Ensure both values use the same currency for accurate
+# price comparisons and conversions.
+#
+# This restriction will be removed in a future version, allowing independent
+# currency configuration for Steam API and portfolio items.
+#
 currency = "USD"
 
 
