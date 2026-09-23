@@ -414,15 +414,16 @@ class App:
         self.sync_status.synced_items.add(item_name)
         self.runtime.total_requests += 1
 
-        keys: list[components_key] = [
-            components_key.ITEM_POSITIVE,
+        component_key: components_key = (
+            components_key.ITEM_POSITIVE
+            if item_values["profit"] > 0
+            else components_key.ITEM_NEGATIVE
+        )
+        text_key: components_key = (
             components_key.TEXT_ITEM_POSITIVE
             if item_values["profit"] > 0
-            else components_key.ITEM_NEGATIVE,
-            components_key.TEXT_ITEM_NEGATIVE,
-        ]
-        component_key: components_key = keys[0]
-        text_key: components_key = keys[1]
+            else components_key.TEXT_ITEM_NEGATIVE
+        )
         component_renderer.status_update(key=component_key, variables=item_display)
         self.text_document.add(key=text_key, variables=item_display)
         component_renderer.progress_advance_task(task_id=task_id)
